@@ -1,0 +1,10 @@
+data.zip
+prepare_dataset.ipynb
+dataset/
+notebooks/.cache
+__pycache__/
+*.pyc
+logs/
+.vscode/
+.env
+data/tokenized
