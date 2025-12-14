@@ -45,7 +45,7 @@ def extract_features_from_pm(pm: pretty_midi.PrettyMIDI) -> Optional[np.ndarray]
         # if inst.is_drum: continue
         notes.extend(inst.notes)
 
-    if len(notes) < 10:
+    if len(notes) < 5:
         return None
 
     end_time = float(max(pm.get_end_time(), 1e-6))
@@ -132,12 +132,16 @@ def load_splits(splits_path: str) -> Dict[str, set]:
         "test": set(splits.get("test", [])),
     }
 
-
 def build_real_dataset(
     index_path: str,
     splits_path: str,
     use_split_train: str = "train",
     use_split_test: str = "test",
+    seed: int = 42,
+    max_train: Optional[int] = None,
+    max_test: Optional[int] = None,
+    max_per_genre_train: Optional[int] = None,
+    max_per_genre_test: Optional[int] = None,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, List[str]]:
     """
     Returns: X_train, y_train, X_test, y_test, classes (sorted unique genres)
@@ -155,6 +159,31 @@ def build_real_dataset(
 
     df_train = df[df["midi_path"].isin(train_paths)].reset_index(drop=True)
     df_test = df[df["midi_path"].isin(test_paths)].reset_index(drop=True)
+
+    rng = np.random.default_rng(seed)
+
+    def cap_per_genre(dfsub: pd.DataFrame, max_per_genre: Optional[int]) -> pd.DataFrame:
+        if max_per_genre is None:
+            return dfsub
+        parts = []
+        for g, grp in dfsub.groupby("genre_final"):
+            if len(grp) > max_per_genre:
+                take_idx = rng.choice(grp.index.to_numpy(), size=max_per_genre, replace=False)
+                parts.append(dfsub.loc[take_idx])
+            else:
+                parts.append(grp)
+        return pd.concat(parts, axis=0).sample(frac=1.0, random_state=int(seed)).reset_index(drop=True)
+
+    # optional per-genre caps (keeps classifier balanced + much faster)
+    df_train = cap_per_genre(df_train, max_per_genre_train)
+    df_test = cap_per_genre(df_test, max_per_genre_test)
+
+    # optional global caps
+    if max_train is not None and len(df_train) > max_train:
+        df_train = df_train.sample(n=max_train, random_state=int(seed)).reset_index(drop=True)
+    if max_test is not None and len(df_test) > max_test:
+        df_test = df_test.sample(n=max_test, random_state=int(seed)).reset_index(drop=True)
+
 
     classes = sorted(df["genre_final"].unique().tolist())
     genre2id = {g: i for i, g in enumerate(classes)}
@@ -228,6 +257,16 @@ def main():
     ap.add_argument("--model", type=str, default="logreg", choices=["logreg", "rf"])
     ap.add_argument("--max_generated_per_genre", type=int, default=200)
     ap.add_argument("--seed", type=int, default=42)
+
+    ap.add_argument("--max_real_train", type=int, default=None,
+                    help="Max number of REAL train MIDIs to featurize (sampled).")
+    ap.add_argument("--max_real_test", type=int, default=None,
+                    help="Max number of REAL test MIDIs to featurize (sampled).")
+    ap.add_argument("--max_real_per_genre_train", type=int, default=None,
+                    help="Cap REAL train MIDIs per genre before featurizing (faster + balanced).")
+    ap.add_argument("--max_real_per_genre_test", type=int, default=None,
+                    help="Cap REAL test MIDIs per genre before featurizing (faster + balanced).")
+
     args = ap.parse_args()
 
     out_dir = Path(args.out_dir)
@@ -236,7 +275,16 @@ def main():
     np.random.seed(args.seed)
 
     print("Loading real MIDI data...")
-    X_train, y_train, X_test, y_test, classes = build_real_dataset(args.index, args.splits)
+    X_train, y_train, X_test, y_test, classes = build_real_dataset(
+    args.index,
+    args.splits,
+    seed=args.seed,
+    max_train=args.max_real_train,
+    max_test=args.max_real_test,
+    max_per_genre_train=args.max_real_per_genre_train,
+    max_per_genre_test=args.max_real_per_genre_test,
+    )
+
 
     print(f"Train samples: {len(X_train)} | Test samples: {len(X_test)}")
     print("Class distribution (train):", dict(Counter([classes[i] for i in y_train]).most_common(10)))
