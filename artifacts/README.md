@@ -1,6 +1,5 @@
 Placeholder folder for dataset metadata and intermediate artifacts used by the music generation pipeline.
 
-## Structure
 ```
 artifacts/
 ├── artist_genres.csv       # Artist → genre mapping
