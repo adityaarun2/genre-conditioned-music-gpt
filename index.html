@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Genre Conditioned MusicGPT</title>
+  <meta name="description" content="A GPT-style model for genre-conditioned music generation." />
+
+
+  <meta property="og:title" content="Genre Conditioned MusicGPT" />
+  <meta property="og:description" content="A GPT-style model for genre-conditioned music generation. Demo, setup, and results." />
+  <meta property="og:type" content="website" />
+
+  <meta property="og:url" content="https://adityaarun2.github.io/genre-conditioned-music-gpt/" />
+
+  <meta property="og:image" content="https://adityaarun2.github.io/genre-conditioned-music-gpt/assets/cover.png" />
+  <meta property="og:image:alt" content="Genre Conditioned MusicGPT cover image" />
+
+
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; line-height: 1.5; }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 28px 18px 60px; }
+    header { display: grid; gap: 14px; margin-bottom: 18px; }
+    .badge { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+    .pill { border: 1px solid rgba(127,127,127,.35); padding: 6px 10px; border-radius: 999px; font-size: 13px; }
+    .hero { border: 1px solid rgba(127,127,127,.25); border-radius: 16px; overflow: hidden; background: rgba(127,127,127,.06); }
+    .hero img { width: 100%; height: auto; display: block; }
+    .grid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 16px; margin-top: 18px; }
+    .card { border: 1px solid rgba(127,127,127,.25); border-radius: 16px; padding: 16px; background: rgba(127,127,127,.04); }
+    h1 { margin: 0; font-size: 34px; letter-spacing: -0.5px; }
+    h2 { margin: 0 0 10px; font-size: 18px; }
+    ul { margin: 10px 0 0; padding-left: 18px; }
+    a { text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer { margin-top: 22px; opacity: .8; font-size: 13px; }
+    @media (max-width: 840px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Genre Conditioned MusicGPT</h1>
+      <div class="badge">
+        <span class="pill">Genre conditioning</span>
+        <span class="pill">GPT / Transformer</span>
+        <span class="pill">Music generation</span>
+      </div>
+      <p>
+        A GPT-style model that generates music conditioned on a target genre.
+        This page exists to provide a clean preview for LinkedIn + a quick overview for recruiters.
+      </p>
+      <p>
+        <a href="https://github.com/adityaarun2/genre-conditioned-music-gpt">GitHub Repo →</a>
+      </p>
+    </header>
+
+    <div class="hero">
+      <!-- Replace cover.png with any image you want -->
+      <img src="assets/cover.png" alt="Genre Conditioned MusicGPT cover" />
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h2>What it does</h2>
+        <ul>
+          <li>Trains a GPT-style sequence model to learn musical structure.</li>
+          <li>Conditions generation on a chosen genre label.</li>
+          <li>Produces genre-consistent outputs for sampling / evaluation.</li>
+        </ul>
+
+        <h2 style="margin-top:14px;">How to run</h2>
+        <ol style="margin:10px 0 0; padding-left:18px;">
+          <li>Clone the repo</li>
+          <li>Install dependencies</li>
+          <li>Train / sample using the provided scripts</li>
+        </ol>
+        <p style="margin-top:10px;">
+          Full instructions live in the repo README:
+          <a href="https://github.com/adityaarun2/genre-conditioned-music-gpt#readme">README →</a>
+        </p>
+      </section>
+
+      <aside class="card">
+        <h2>Links</h2>
+        <ul>
+          <li><a href="https://github.com/adityaarun2/genre-conditioned-music-gpt">Repository</a></li>
+          <li><a href="https://www.linkedin.com/in/aditya-arun1/">LinkedIn</a></li>
+          <li><a href="https://github.com/adityaarun2/genre-conditioned-music-gpt/issues">Issues</a></li>
+        </ul>
+
+        <h2 style="margin-top:14px;">Tech</h2>
+        <ul>
+          <li>Python</li>
+          <li>Transformer / GPT</li>
+          <li>(Add libs: PyTorch / etc.)</li>
+        </ul>
+
+      </aside>
+    </div>
+
+    <footer>
+      © <span id="y"></span> Aditya Arun — Built for GitHub Pages / LinkedIn previews.
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
